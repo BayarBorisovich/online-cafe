@@ -29,16 +29,66 @@
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
     <!--[if lt IE 9]>
-    <script src="{{ assert('https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') }}"></script>
-    <script src="{{ assert('https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') }}"></script>
+    <script src="{{ asset('https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') }}"></script>
+    <script src="{{ asset('https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') }}"></script>
     <![endif]-->
+
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
 </head>
 
 <body>
-<!-- Start Main Top -->
-@yield('content')
 
+{{--начинается блок регистрации и логина--}}
+
+<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    <div class="container">
+        <!-- Right Side Of Navbar -->
+        <ul class="navbar-nav ms-auto">
+            <!-- Authentication Links -->
+            @guest
+                @if (Route::has('login'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                    </li>
+                @endif
+
+                @if (Route::has('register'))
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    </li>
+                @endif
+            @else
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->name }}
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            @endguest
+        </ul>
+    </div>
+</nav>
+
+{{--блок регистрации и логина закончился--}}
+
+<!-- Start Main Top -->
+
+<div id="app">
+    @yield('content')
+</div>
 
 <!-- Start Footer  -->
 <footer>
@@ -49,7 +99,9 @@
                     <div class="footer-top-box">
                         <h3>Business Time</h3>
                         <ul class="list-time">
-                            <li>Monday - Friday: 08.00am to 05.00pm</li> <li>Saturday: 10.00am to 08.00pm</li> <li>Sunday: <span>Closed</span></li>
+                            <li>Monday - Friday: 08.00am to 05.00pm</li>
+                            <li>Saturday: 10.00am to 08.00pm</li>
+                            <li>Sunday: <span>Closed</span></li>
                         </ul>
                     </div>
                 </div>
@@ -58,7 +110,7 @@
                         <h3>Newsletter</h3>
                         <form class="newsletter-box">
                             <div class="form-group">
-                                <input class="" type="email" name="Email" placeholder="Email Address*" />
+                                <input class="" type="email" name="Email" placeholder="Email Address*"/>
                                 <i class="fa fa-envelope"></i>
                             </div>
                             <button class="btn hvr-hover" type="submit">Submit</button>
@@ -86,8 +138,11 @@
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <div class="footer-widget">
                         <h4>About Freshshop</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua. </p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12 col-sm-12">
@@ -108,13 +163,16 @@
                         <h4>Contact Us</h4>
                         <ul>
                             <li>
-                                <p><i class="fas fa-map-marker-alt"></i>Address: Michael I. Days 3756 <br>Preston Street Wichita,<br> KS 67213 </p>
+                                <p><i class="fas fa-map-marker-alt"></i>Address: Michael I. Days 3756 <br>Preston Street
+                                    Wichita,<br> KS 67213 </p>
                             </li>
                             <li>
-                                <p><i class="fas fa-phone-square"></i>Phone: <a href="tel:+1-888705770">+1-888 705 770</a></p>
+                                <p><i class="fas fa-phone-square"></i>Phone: <a href="tel:+1-888705770">+1-888 705
+                                        770</a></p>
                             </li>
                             <li>
-                                <p><i class="fas fa-envelope"></i>Email: <a href="mailto:contactinfo@gmail.com">contactinfo@gmail.com</a></p>
+                                <p><i class="fas fa-envelope"></i>Email: <a href="mailto:contactinfo@gmail.com">contactinfo@gmail.com</a>
+                                </p>
                             </li>
                         </ul>
                     </div>
@@ -134,22 +192,22 @@
 
 <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
 
-<!-- ALL JS FILES -->
-<script src="{{ assert('js/jquery-3.2.1.min.js') }}"></script>
-<script src="{{ assert('js/popper.min.js') }}"></script>
-<script src="{{ assert('js/bootstrap.min.') }}js"></script>
-<!-- ALL PLUGINS -->
-<script src="{{ assert('js/jquery.superslides.min.js') }}"></script>
-<script src="{{ assert('js/bootstrap-select.js') }}"></script>
-<script src="{{ assert('js/inewsticker.js') }}"></script>
-<script src="{{ assert('js/bootsnav.js.') }}"></script>
-<script src="{{ assert('js/images-loded.min.js') }}"></script>
-<script src="{{ assert('js/isotope.min.js') }}"></script>
-<script src="{{ assert('js/owl.carousel.min.js') }}"></script>
-<script src="{{ assert('js/baguetteBox.min.js') }}"></script>
-<script src="{{ assert('js/form-validator.min.js') }}"></script>
-<script src="{{ assert('js/contact-form-script.js') }}"></script>
-<script src="{{ assert('js/custom.js') }}"></script>
 </body>
 
+<!-- ALL JS FILES -->
+<script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+<script src="{{ asset('js/popper.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<!-- ALL PLUGINS -->
+<script src="{{ asset('js/jquery.superslides.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-select.js') }}"></script>
+<script src="{{ asset('js/inewsticker.js') }}"></script>
+<script src="{{ asset('js/bootsnav.js') }}"></script>
+<script src="{{ asset('js/images-loded.min.js') }}"></script>
+<script src="{{ asset('js/isotope.min.js') }}"></script>
+<script src="{{ asset('js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('js/baguetteBox.min.js') }}"></script>
+<script src="{{ asset('js/form-validator.min.js') }}"></script>
+<script src="{{ asset('js/contact-form-script.js') }}"></script>
+<script src="{{ asset('js/custom.js') }}"></script>
 </html>
