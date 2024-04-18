@@ -34,7 +34,7 @@ class MainController extends Controller
 
     public function getProducts()
     {
-        $categories = Category::with('products')->get();
+        $categories = Category::with('products')->get()->sort()->values();
 
         return response()->json([
             'categories' => $categories

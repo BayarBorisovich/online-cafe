@@ -10,7 +10,8 @@ class ProductController extends Controller
 {
     public function test()
     {
-        $categories = Category::with('products')->get();
+        $categories = Category::with('products')->get()->sort()->values();
+
 
 //        $categories = Category::all();
 
