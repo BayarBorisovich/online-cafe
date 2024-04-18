@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class MainController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,6 +25,19 @@ class HomeController extends Controller
      */
     public function index()
     {
+        return view('home');
+    }
+    public function main()
+    {
         return view('main.index');
+    }
+
+    public function getProducts()
+    {
+        $categories = Category::with('products')->get();
+
+        return response()->json([
+            'categories' => $categories
+        ]);
     }
 }

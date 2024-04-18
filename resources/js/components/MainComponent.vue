@@ -48,23 +48,23 @@
                 <!-- End Header Navigation -->
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="navbar-menu">
+                <div class="collapse navbar-collapse" id="navbar-menu" v-for="category in categories">
                     <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-                        <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">SHOP</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="shop.html">Sidebar Shop</a></li>
-                                <li><a href="shop-detail.html">Shop Detail</a></li>
-                                <li><a href="cart.html">Cart</a></li>
-                                <li><a href="checkout.html">Checkout</a></li>
-                                <li><a href="my-account.html">My Account</a></li>
-                                <li><a href="wishlist.html">Wishlist</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
+                        <li class="nav-item active"><a class="nav-link" href="index.html">{{ category.name }}</a></li>
+<!--                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>-->
+<!--                        <li class="dropdown">-->
+<!--                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">SHOP</a>-->
+<!--                            <ul class="dropdown-menu">-->
+<!--                                <li><a href="shop.html">Sidebar Shop</a></li>-->
+<!--                                <li><a href="shop-detail.html">Shop Detail</a></li>-->
+<!--                                <li><a href="cart.html">Cart</a></li>-->
+<!--                                <li><a href="checkout.html">Checkout</a></li>-->
+<!--                                <li><a href="my-account.html">My Account</a></li>-->
+<!--                                <li><a href="wishlist.html">Wishlist</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>-->
+<!--                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>-->
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -102,19 +102,19 @@
     <!-- End Top Search -->
 
     <!-- Start Products  -->
-    <div class="products-box">
+    <div class="products-box" v-for="category in categories">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="title-all text-left">
-                        <h1>Завтраки</h1>
+                        <h1>{{ category.name }}</h1>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>
                     </div>
                 </div>
             </div>
 
             <div class="row special-list">
-                <div class="col-lg-3 col-md-6 special-grid best-seller">
+                <div class="col-lg-3 col-md-6 special-grid best-seller" v-for="product in category.products">
                     <div class="products-single fix">
                         <div class="box-img-hover">
 
@@ -129,10 +129,10 @@
                             <img src="/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
                         <div class="why-text">
-                            <h4>Морковь</h4>
-                            <h6>350 гр.</h6>
-                            <h6>Отправляемся в сладкое плавание в хорошей компании — горячее какао с молоком</h6>
-                            <h5> 235 р.</h5>
+                            <h4>{{ product.name }}</h4>
+                            <h6>{{ product.weight }} гр.</h6>
+                            <h6>{{ product.description }}</h6>
+                            <h5> {{ product.price }} р.</h5>
                             <a class="cart btn hvr-hover " href="#">Добавить в корзину</a>
 <!--                            <button type="button" class="btn btn-success">Success</button>-->
                         </div>
@@ -151,8 +151,26 @@ import axios from "axios";
 export default {
     name: "Main",
 
+    data() {
+        return {
+            categories: null,
+        }
+    },
+
     mounted() {
         console.log('Component mounted.')
+        this.getProducts()
+    },
+
+    methods: {
+        getProducts() {
+            axios.get('/main/json')
+                .then(result => {
+                    console.log(result.data)
+                    this.categories = result.data.categories
+                })
+        },
+
     }
 }
 </script>
