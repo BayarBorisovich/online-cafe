@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,13 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 Route::get('/main', [MainController::class, 'main'])->name('main');
 Route::get('/main/json', [MainController::class, 'getProducts']);
+
+Route::get('/cart', [CartController::class, 'getCart'])->name('cart');
+Route::get('/cart/json', [CartController::class, 'getProducts']);
+Route::post('/cart/{productId}', [CartController::class, 'addProducts']);
+Route::delete('/cart/delete/{productId}', [CartController::class, 'removeProducts']);
+
+
 
 Route::get('/test', [ProductController::class, 'test']);
 
