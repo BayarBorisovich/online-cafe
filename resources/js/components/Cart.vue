@@ -4,10 +4,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Cart</h2>
+                    <h2>Корзина</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/main">Shop</a></li>
-                        <li class="breadcrumb-item active">Cart</li>
+                        <li class="breadcrumb-item"><a href="/main">Меню</a></li>
+                        <li class="breadcrumb-item active">Корзина</li>
                     </ul>
                 </div>
             </div>
@@ -24,12 +24,12 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>Images</th>
-                                <th>Product Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Remove</th>
+                                <th>Картинка</th>
+                                <th>Название продукта</th>
+                                <th>Цена</th>
+                                <th>Количество</th>
+                                <th>Итого</th>
+                                <th>Удалить</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,11 +47,22 @@
                                 <td class="price-pr">
                                     <p>{{ product.product.price }} р.</p>
                                 </td>
-                                <td class="quantity-box"><input type="number" size="4" :value="product.quantity" min="0" step="1"
-                                                                class="c-input-text qty text"></td>
+                                <td>
+                                    <button @click.prevent="addMinus(product.product_id)" type="submit"
+                                            class="border-0 bg-transparent">
+                                        <i class="fa fa-minus" aria-hidden="true"></i>
+                                    </button>
+
+                                    <input type="text" class="col-md-2" :value="product.quantity">
+
+                                    <button @click.prevent="addPlus(product.product_id)" type="submit"
+                                            class="border-0 bg-transparent">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                </td>
                                 <td class="total-pr">
                                     <p>{{ product.product.price * product.quantity }} р.</p>
-<!--                                    <p>{{ total }} р.</p>-->
+                                    <!--                                    <p>{{ total }} р.</p>-->
                                 </td>
                                 <td class="remove-pr">
                                     <button @click.prevent="remove(product.product_id)" type="submit"
@@ -71,9 +82,11 @@
 
                 </div>
                 <div class="col-lg-6 col-sm-6">
-                    <div class="update-box">
-                        <input value="Update Cart" type="submit">
-                    </div>
+                    <a href="/order">
+                        <div class="update-box">
+                            <input value="Оформить заказ" type="submit">
+                        </div>
+                    </a>
                 </div>
             </div>
 
@@ -81,44 +94,21 @@
                 <div class="col-lg-8 col-sm-12"></div>
                 <div class="col-lg-4 col-sm-12">
                     <div class="order-box">
-                        <h3>Order summary</h3>
-                        <div class="d-flex">
-                            <h4>Sub Total</h4>
-                            <div class="ml-auto font-weight-bold"> $ 130</div>
-                        </div>
-                        <div class="d-flex">
-                            <h4>Discount</h4>
-                            <div class="ml-auto font-weight-bold"> $ 40</div>
-                        </div>
-                        <hr class="my-1">
-                        <div class="d-flex">
-                            <h4>Coupon Discount</h4>
-                            <div class="ml-auto font-weight-bold"> $ 10</div>
-                        </div>
-                        <div class="d-flex">
-                            <h4>Tax</h4>
-                            <div class="ml-auto font-weight-bold"> $ 2</div>
-                        </div>
-                        <div class="d-flex">
-                            <h4>Shipping Cost</h4>
-                            <div class="ml-auto font-weight-bold"> Free</div>
+                        <div class="d-flex gr-total">
+                            <h5>В корзине</h5>
                         </div>
                         <hr>
                         <div class="d-flex gr-total">
-                            <h5>Grand Total</h5>
-                            <div class="ml-auto h5"> $ 388</div>
+                            <h3>Товаров</h3>
+                            <div class="ml-auto h5">{{ totalQuantity }} шт.</div>
+                        </div>
+                        <div class="d-flex gr-total mb-3">
+                            <h3>На сумму</h3>
+                            <div class="ml-auto h5">{{ orderSum }} р.</div>
                         </div>
                         <hr>
                     </div>
                 </div>
-                <div class="col-12 d-flex shopping-box">
-                    <a href="checkout.html" class="ml-auto btn hvr-hover update-box">Checkout</a>
-                </div>
-<!--                             <div class="col-lg-6 col-sm-6 ">-->
-<!--                                    <div class="update-box">-->
-<!--                                            <input value="Update Cart" type="submit">-->
-<!--                                        </div>-->
-<!--                                </div>-->
             </div>
 
         </div>
@@ -136,43 +126,76 @@ export default {
     data() {
         return {
             products: null,
-            content: null
+            content: null,
+            orderSum: null,
+            totalQuantity: null,
         }
     },
 
     mounted() {
         console.log('Component mounted.')
         this.getProducts()
+        this.totalInTheBasket()
 
     },
 
     methods: {
         getProducts() {
-            axios.get('/cart/json')
+            axios.get('/cart/products')
                 .then(result => {
-                    console.log(result.data.products)
+                    // console.log(result.data.products)
                     this.products = result.data.products
+                })
+        },
+
+        addPlus(id) {
+            console.log(id)
+            axios.patch(`/cart//${id}`)
+                .then(result => {
+                    console.log('+')
+                    this.getProducts()
+                    this.totalInTheBasket()
+                })
+        },
+
+        addMinus(id) {
+            axios.patch(`/cart/update/${id}`)
+                .then(result => {
+                    console.log('-')
+                    this.getProducts()
+                    this.totalInTheBasket()
+                })
+        },
+
+        totalInTheBasket() {
+            axios.get('/cart/total')
+                .then(result => {
+                    console.log(result.data.orderSum)
+                    this.totalQuantity = result.data.totalQuantity
+                    this.orderSum = result.data.orderSum
                 })
         },
 
         remove(id) {
             axios.delete(`/cart/delete/${id}`)
-                .then(result =>{
+                .then(result => {
                     console.log('delete')
                     this.getProducts()
+                    this.totalInTheBasket()
                 })
         }
 
     },
 
-    computed: {
-        total() {
-            let products = this.products
-            for (let key of products) {
-                console.log(key.quantity)
-            }
-        },
-
-    },
+    // computed: {
+    //     total() {
+    //         let products = this.products
+    //         for (let key of products) {
+    //             console.log(key.quantity)
+    //         }
+    //     },
+    //
+    // },
 }
 </script>
+

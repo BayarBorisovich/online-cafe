@@ -1,3 +1,13 @@
+<style scoped>
+.box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    flex-direction: column;
+}
+</style>
 <template>
 
     <!-- Start Main Top -->
@@ -19,7 +29,8 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="navbar-menu" v-for="category in categories">
                     <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-                        <li class="nav-item active"><a class="nav-link" :href="'#'+category.id">{{ category.name }}</a>
+                        <li class="nav-item active">
+                            <a class="nav-link" :href="'#'+category.id">{{ category.name }}</a>
                         </li>
                         <!--                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>-->
                         <!--                        <li class="dropdown">-->
@@ -43,11 +54,11 @@
                 <div class="attr-nav">
                     <ul>
                         <li class="search"><a href="#"><i class="fa fa-search"></i></a></li>
-                        <li class="side-menu">
+                        <li class="side-menu ">
                             <a href="/cart">
-                                <i class="fa fa-shopping-bag"></i>
-                                <span class="badge">3</span>
-                                <p>My Cart</p>
+                                <i class="fa fa-shopping-bag">
+                                    <p class="mx-2">Корзина: {{ totalQuantity }}</p>
+                                </i>
                             </a>
                         </li>
                     </ul>
@@ -77,7 +88,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="title-all text-left">
-                        <h1 :id="category.id">{{ category.name }}</h1>
+                        <h1 :id="category.id"> {{ category.name }} </h1>
                         <!--                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>-->
                     </div>
                 </div>
@@ -85,8 +96,8 @@
 
             <div class="row special-list">
                 <div class="col-lg-3 col-md-6 special-grid best-seller" v-for="product in category.products">
-                    <div class="products-single fix">
-                        <div class="box-img-hover">
+                    <div class="products-single fix box">
+                        <div class="box-img-hover mt-3">
                             <!--                            можно добавить значок 'SALE'-->
                             <!--                            <div class="type-lb">-->
                             <!--                                <p class="sale">Sale</p>-->
@@ -94,17 +105,26 @@
                             <!--                            конец 'SALE'-->
                             <img src="/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
-                        <div class="why-text ">
+                        <div class="why-text col-12 ">
                             <h4>{{ product.name }}</h4>
                             <h6>{{ product.weight }} гр.</h6>
                             <h6>{{ product.description }}</h6>
-                            <h5> {{ product.price }} р.</h5>
-                            <div class="text-left mt-2">
-                                <!--                                <input type="number" class="form-control mb-3" id="quantity"-->
-                                <!--                                       aria-describedby="quantity" placeholder="количество">-->
-                                <button @click.prevent="addProduct(product.id)" type="submit"
-                                        class="btn btn-success hvr-hover">В корзину
-                                </button>
+                            <div class="text-center">
+                                <div class="d-flex justify-content-between mt-2">
+                                    <h5 class="my-auto"> {{ product.price }} р.</h5>
+                                    <button type="submit" @click.prevent="changeProductId(product.id)"
+                                            class="border-0 bg-transparent">
+                                        <i class="fa fa-cart-plus fa-2x" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div :class="isId(product.id) ? 'd-flex justify-content-between mt-3' : 'd-none' ">
+                                    <input type="number" class="form-control col-md-5" v-model="quantity"
+                                           name="quantity"
+                                           placeholder="к-во" value="">
+                                    <button @click.prevent="addProduct(product.id)" type="submit"
+                                            class="btn btn-success hvr-hover h-25">В корзину
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,14 +146,18 @@ export default {
         return {
             categories: null,
             cartProducts: null,
-            productId: null
+            productId: null,
+            quantity: null,
+            totalQuantity: null,
+            orderSum: null
         }
     },
 
     mounted() {
         console.log('Component mounted.')
         this.getProducts()
-        this.getCartProducts()
+        // this.getCartProducts()
+        this.totalInTheBasket()
     },
 
     methods: {
@@ -145,21 +169,23 @@ export default {
                 })
         },
 
-        getCartProducts() {
-            axios.get('/cart/json')
-                .then(result => {
-                    console.log(result.data.products)
-                    this.cartProducts = result.data.products
-                })
-        },
+        // getCartProducts() {
+        //     axios.get('/cart/json')
+        //         .then(result => {
+        //             console.log(result.data.products)
+        //             this.cartProducts = result.data.products
+        //         })
+        // },
 
         addProduct(id) {
             console.log(id)
-            axios.post(`/cart/${id}`)
+            axios.post(`/cart/create/${id}`, {quantity: this.quantity})
                 .then(result => {
                     console.log('ok')
+                    this.quantity = null
                     this.getProducts()
-                    this.getCartProducts()
+                    this.totalInTheBasket()
+                    // this.getCartProducts()
                 })
                 .catch(error => {
                     console.log(error)
@@ -169,14 +195,22 @@ export default {
                 });
         },
 
-        // changeProductId(id) {
-        //     this.productId = id
-        //     console.log('ggggg')
-        // },
-        //
-        // isId(id) {
-        //    return  this.productId == id
-        // }
+        changeProductId(id) {
+            this.productId = id
+        },
+
+        isId(id) {
+            return this.productId == id
+        },
+
+        totalInTheBasket() {
+            axios.get('/cart/total')
+                .then(result => {
+                    console.log(result.data.orderSum)
+                    this.totalQuantity = result.data.totalQuantity
+                    this.orderSum = result.data.orderSum
+                })
+        },
 
     }
 }

@@ -33,7 +33,37 @@ class CartController extends Controller
             'products' => $products
         ]);
     }
-    public function addProducts(int $productId): Response
+
+    public function addPlus(int $productId): JsonResponse
+    {
+        $product = CartProduct::where('product_id', $productId)->get();
+
+        if (!$product->isEmpty()) {
+            $product->toQuery()->update([
+                'quantity' => $product->first()->quantity + 1
+            ]);
+        }
+
+        return response()->json([]);
+    }
+
+    public function addMinus(int $productId): JsonResponse
+    {
+       print_r($productId);
+        $product = CartProduct::where('product_id', $productId)->get();
+
+
+        if (!$product->isEmpty()) {
+            $product->toQuery()->update([
+                'quantity' => $product->first()->quantity - 1
+            ]);
+        }
+
+        return response()->json([]);
+
+    }
+
+    public function addProducts(Request $request, int $productId): Response
     {
         $id = Auth::id();
 
@@ -51,15 +81,37 @@ class CartController extends Controller
             CartProduct::create([
                 'cart_id' => $cart->id,
                 'product_id' => $productId,
-                'quantity' => 1,
+                'quantity' => $request->quantity,
             ]);
 
         } else {
             $product->toQuery()->update([
-                'quantity' => $product->first()->quantity + 1
+                'quantity' => $product->first()->quantity + $request->quantity
             ]);
         }
         return response([]);
+    }
+
+    public function totalInTheBasket(): JsonResponse
+    {
+        $products = User::find(Auth::id())
+            ->carts()
+            ->with('products')
+            ->first()
+            ->products()->with('product')->get();
+
+        $orderSum = [];
+        $totalQuantity = [];
+        foreach ($products as $cartProduct) {
+            $totalQuantity[] = $cartProduct->quantity;
+            $orderSum[] = $cartProduct->product->price * $cartProduct->quantity;
+        }
+
+        return response()->json([
+            'totalQuantity' => array_sum($totalQuantity),
+            'orderSum' => round(array_sum($orderSum), 2)
+        ]);
+
     }
 
     public function removeProducts(int $productId): Response

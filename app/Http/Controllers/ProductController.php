@@ -13,12 +13,19 @@ class ProductController extends Controller
 {
     public function test()
     {
-        $products = User::find(1)
+        $products = User::find(Auth::id())
             ->carts()
             ->with('products')
             ->first()
             ->products()->with('product')->get();
 
-        dd($products);
+        $orderSum = [];
+        $totalQuantity = [];
+        foreach ($products as $cartProduct) {
+            $totalQuantity[] = $cartProduct->quantity;
+            $orderSum[] = $cartProduct->product->price * $cartProduct->quantity;
+        }
+
+        dd(round(array_sum($orderSum)), 2);
     }
 }

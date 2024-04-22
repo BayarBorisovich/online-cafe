@@ -12,6 +12,8 @@ class CartProduct extends Model
 
     protected $fillable = ['cart_id', 'product_id', 'quantity'];
 
+    protected $withCount = ['product'];
+
     /**
      * Get the cart that contains the product.
      */

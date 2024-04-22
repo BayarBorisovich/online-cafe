@@ -241,4 +241,11 @@
 <script src="{{ asset('js/form-validator.min.js') }}"></script>
 <script src="{{ asset('js/contact-form-script.js') }}"></script>
 <script src="{{ asset('js/custom.js') }}"></script>
+<style>
+    .much a {
+        padding: 2px;
+        border: 1px solid #e5e5e5;
+        text-decoration: none;
+    }
+</style>
 </html>
