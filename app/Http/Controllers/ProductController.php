@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Models\CartProduct;
 use App\Models\Category;
 use App\Models\Product;
@@ -13,19 +14,32 @@ class ProductController extends Controller
 {
     public function test()
     {
-        $products = User::find(Auth::id())
-            ->carts()
-            ->with('products')
-            ->first()
-            ->products()->with('product')->get();
+        $categories = Category::with('products')->get()->sort()->values();
 
-        $orderSum = [];
-        $totalQuantity = [];
-        foreach ($products as $cartProduct) {
-            $totalQuantity[] = $cartProduct->quantity;
-            $orderSum[] = $cartProduct->product->price * $cartProduct->quantity;
+        $cartProducts = User::find(Auth::id())
+           ->carts()
+           ->with('products')
+           ->first()->products;
+
+        dd($cartProducts);
+
+        foreach ($categories as $category) {
+            echo "<br>";
+            echo $category->name . "<br>";
+            echo "<br>";
+            foreach ($category->products as $categoryProduct) {
+                echo $categoryProduct->name . "<br>";
+                echo $categoryProduct->price . "<br>";
+                foreach ($cartProducts as $cartProduct) {
+                    if ($categoryProduct->id === $cartProduct->product_id) {
+                        echo $cartProduct->quantity . "<br>";
+                    }
+                }
+
+            }
+
         }
 
-        dd(round(array_sum($orderSum)), 2);
+//        dd($categories);
     }
 }

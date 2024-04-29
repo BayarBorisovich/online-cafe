@@ -49,11 +49,15 @@ class CartController extends Controller
 
     public function addMinus(int $productId): JsonResponse
     {
-       print_r($productId);
         $product = CartProduct::where('product_id', $productId)->get();
 
-
         if (!$product->isEmpty()) {
+
+            if ($product->first()->quantity === 1) {
+                $product->first()->delete();
+                return response()->json('empty');
+            }
+
             $product->toQuery()->update([
                 'quantity' => $product->first()->quantity - 1
             ]);
@@ -63,7 +67,7 @@ class CartController extends Controller
 
     }
 
-    public function addProducts(Request $request, int $productId): Response
+    public function addProducts(int $productId): Response
     {
         $id = Auth::id();
 
@@ -81,12 +85,12 @@ class CartController extends Controller
             CartProduct::create([
                 'cart_id' => $cart->id,
                 'product_id' => $productId,
-                'quantity' => $request->quantity,
+                'quantity' => 1,
             ]);
 
         } else {
             $product->toQuery()->update([
-                'quantity' => $product->first()->quantity + $request->quantity
+                'quantity' => $product->first()->quantity + 1
             ]);
         }
         return response([]);

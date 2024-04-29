@@ -55,7 +55,7 @@
 
                                     <input type="text" class="col-md-2" :value="product.quantity">
 
-                                    <button @click.prevent="addPlus(product.product_id)" type="submit"
+                                    <button @click.prevent="addPlus(product.product_id)" type="button"
                                             class="border-0 bg-transparent">
                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                     </button>
@@ -150,7 +150,7 @@ export default {
 
         addPlus(id) {
             console.log(id)
-            axios.patch(`/cart//${id}`)
+            axios.patch(`/cart/plus/${id}`)
                 .then(result => {
                     console.log('+')
                     this.getProducts()
@@ -159,7 +159,7 @@ export default {
         },
 
         addMinus(id) {
-            axios.patch(`/cart/update/${id}`)
+            axios.patch(`/cart/minus/${id}`)
                 .then(result => {
                     console.log('-')
                     this.getProducts()
