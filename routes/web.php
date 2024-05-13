@@ -16,25 +16,25 @@ use Illuminate\Http\Request;
 
 Auth::routes();
 
-//Route::group(['prefix' => 'email'], function () {
+Route::group(['prefix' => 'email'], function () {
 
-    Route::get('/email/verify', function () {
+    Route::get('/verify', function () {
         return view('auth.verify-email');
     })->middleware('auth')->name('verification.notice');
 
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    Route::get('/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
 
         return redirect('/main');
     })->middleware(['auth', 'signed'])->name('verification.verify');
 
-    Route::post('/email/verification-notification', function (Request $request) {
+    Route::post('/verification-notification', function (Request $request) {
         $request->user()->sendEmailVerificationNotification();
 
         return back()->with('message', 'Verification link sent!');
     })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-//});
+});
 
 Route::group(['prefix' => 'main'], function () {
     Route::get('/', [MainController::class, 'main'])->name('main');
@@ -54,10 +54,12 @@ Route::group(['prefix' => 'cart'], function (){
 
 });
 
-//Route::group(['prefix' => 'order'], function (){
-    Route::get('/order', [OrderController::class, 'getOrder'])->name('order')->middleware(['auth', 'verified']);
-    Route::post('/order/create', [OrderController::class, 'createOrder']);
-//});
+Route::group(['prefix' => 'order'], function (){
+    Route::get('/', [OrderController::class, 'getOrder'])->name('order');
+    Route::post('/create', [OrderController::class, 'createOrder']);
+    Route::get('/item', [OrderController::class, 'getOrderItems'])->name('items');
+    Route::get('/item/json', [OrderController::class, 'getOrders']);
+});
 
 Route::get('/test', [ProductController::class, 'test']);
 

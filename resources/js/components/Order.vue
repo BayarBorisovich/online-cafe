@@ -18,6 +18,9 @@
     <div class="alert alert-success" v-if="success">
         {{success}}
     </div>
+    <div class="alert alert-success" v-if="error">
+        {{error}}
+    </div>
 
     <div class="container-sm my-3">
         <div class="col-6">
@@ -27,18 +30,30 @@
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">Телефон</label>
+                <div :class="errors.phone ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{errors.phone}}
+                </div>
                 <input type="text" class="form-control" name="phone" v-model="phone" >
             </div>
             <div class="mb-3">
                 <label for="city" class="form-label">Город</label>
+                <div :class="errors.city ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{errors.city}}
+                </div>
                 <input type="text" class="form-control" name="city" v-model="city">
             </div>
             <div class="mb-3">
                 <label for="street" class="form-label">Улица</label>
+                <div :class="errors.street ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{errors.street}}
+                </div>
                 <input type="text" class="form-control" name="street" v-model="street">
             </div>
             <div class="mb-3">
                 <label for="house" class="form-label">Дом</label>
+                <div :class="errors.house ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{errors.house}}
+                </div>
                 <input type="text" class="form-control" name="house" v-model="house">
             </div>
             <div class="mb-3">
@@ -66,6 +81,7 @@ export default {
             comment: null,
 
             success: null,
+            error: null,
             errors: {},
         }
     },
@@ -86,28 +102,25 @@ export default {
             })
                 .then(result =>{
                     console.log('ok')
-                    console.log(result.data.success)
+                    console.log(result)
                     this.success = result.data.success
+                    this.error = result.data.error
+                    this.user_name = null
+                    this.phone = null
+                    this.city = null
+                    this.street = null
+                    this.house = null
+                    this.comment = null
+                    window.location.replace('http://localhost/order/item');
                 })
                 .catch(error => {
                     if (error.response.status === 422) {
+                        console.log(error)
                         this.errors = error.response.data.errors;
                     }
                 });
 
         },
-        // createPost() {
-        //     axios.post('/post/create', {content: this.content})
-        //         .then(result => {
-        //             this.content = null
-        //             this.errors = null
-        //         })
-        //         .catch(error => {
-        //             if (error.response.status === 422) {
-        //                 this.errors = error.response.data.errors;
-        //             }
-        //         });
-        // },
     },
 }
 </script>

@@ -14,32 +14,12 @@ class ProductController extends Controller
 {
     public function test()
     {
-        $categories = Category::with('products')->get()->sort()->values();
+        $products = Auth::user()
+            ->orders()
+            ->with('items')
+            ->first()
+            ->items()->with('product')->get();
 
-        $cartProducts = User::find(Auth::id())
-           ->carts()
-           ->with('products')
-           ->first()->products;
-
-        dd($cartProducts);
-
-        foreach ($categories as $category) {
-            echo "<br>";
-            echo $category->name . "<br>";
-            echo "<br>";
-            foreach ($category->products as $categoryProduct) {
-                echo $categoryProduct->name . "<br>";
-                echo $categoryProduct->price . "<br>";
-                foreach ($cartProducts as $cartProduct) {
-                    if ($categoryProduct->id === $cartProduct->product_id) {
-                        echo $cartProduct->quantity . "<br>";
-                    }
-                }
-
-            }
-
-        }
-
-//        dd($categories);
+        dd($products);
     }
 }

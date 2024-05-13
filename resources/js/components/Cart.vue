@@ -32,11 +32,12 @@
                                 <th>Удалить</th>
                             </tr>
                             </thead>
-                            <tbody>
+
+                            <tbody >
                             <tr v-for="product in products">
                                 <td class="thumbnail-img">
                                     <a href="#">
-                                        <img class="img-fluid" src="images/img-pro-01.jpg" alt=""/>
+                                        <img class="img-fluid" src="/asset/images/img-pro-01.jpg" alt=""/>
                                     </a>
                                 </td>
                                 <td class="name-pr">
@@ -143,7 +144,7 @@ export default {
         getProducts() {
             axios.get('/cart/products')
                 .then(result => {
-                    // console.log(result.data.products)
+                    console.log(result.data.products.length)
                     this.products = result.data.products
                 })
         },

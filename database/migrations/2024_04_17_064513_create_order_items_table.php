@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
-            $table->integer('price');
+            $table->float('price');
 
             $table->index('order_id', 'order_items_order_idx');
             $table->foreign('order_id', 'order_items_order_fk')->references('id')->on('orders');
