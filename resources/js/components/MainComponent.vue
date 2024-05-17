@@ -21,7 +21,7 @@
                             aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <a class="navbar-brand" href="#"><img src="/images/logo.png" class="logo"
+                    <a class="navbar-brand" href="#"><img src="/asset/images/logo.png" class="logo"
                                                           alt=""></a>
                 </div>
                 <!-- End Header Navigation -->
@@ -103,7 +103,7 @@
                             <!--                                <p class="sale">Sale</p>-->
                             <!--                            </div>-->
                             <!--                            конец 'SALE'-->
-                            <img src="/images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                            <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
                         <div class="why-text col-12">
                             <div type="button" data-bs-toggle="modal"
@@ -161,7 +161,7 @@
                 <div class="modal-body">
                     <div class="row justify-content-between">
                         <div class="box-img-hover mt-3 col-6">
-                            <img src="/images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                            <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
                         <div class="why-text col-6">
                             <h4>{{ oneProduct.name }}</h4>

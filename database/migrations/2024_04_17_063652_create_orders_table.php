@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_name')->nullable();
             $table->string('phone');
-            $table->string('city');
-            $table->string('street');
-            $table->string('house');
+            $table->text('address');
             $table->text('comment')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->index('user_id', 'order_user_idx');

@@ -137,7 +137,6 @@ export default {
         console.log('Component mounted.')
         this.getProducts()
         this.totalInTheBasket()
-
     },
 
     methods: {
@@ -184,7 +183,7 @@ export default {
                     this.getProducts()
                     this.totalInTheBasket()
                 })
-        }
+        },
 
     },
 

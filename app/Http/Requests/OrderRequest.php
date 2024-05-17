@@ -24,9 +24,7 @@ class OrderRequest extends FormRequest
         return [
             'user_name' => 'nullable|string',
             'phone'=> 'required|string',
-            'city' => 'required|string',
-            'street' => 'required|string',
-            'house' => 'required|string',
+            'address' => 'required|string',
             'comment' => 'nullable|string',
         ];
     }

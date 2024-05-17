@@ -24,6 +24,7 @@
 
     <div class="container-sm my-3">
         <div class="col-6">
+            <h5>Доставка осуществляется в пределах пгт. Могойтуй</h5>
             <div class="mb-3">
                 <label for="user_name" class="form-label">Имя</label>
                 <input type="text" class="form-control" name="user_name" v-model="user_name">
@@ -35,26 +36,21 @@
                 </div>
                 <input type="text" class="form-control" name="phone" v-model="phone" >
             </div>
+
             <div class="mb-3">
-                <label for="city" class="form-label">Город</label>
-                <div :class="errors.city ? 'alert alert-success' : 'd-none'" v-if="errors">
-                    {{errors.city}}
+                <label for="address" class="form-label">
+                    Адресс: укажите улицу и дом
+                </label>
+                <div :class="errors.address ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{errors.address}}
                 </div>
-                <input type="text" class="form-control" name="city" v-model="city">
-            </div>
-            <div class="mb-3">
-                <label for="street" class="form-label">Улица</label>
-                <div :class="errors.street ? 'alert alert-success' : 'd-none'" v-if="errors">
-                    {{errors.street}}
+                <input type="text" class="form-control" name="address" v-model="address" @input="getAddressSuggestions">
+                <div class="list-group" v-for=" suggestion in suggestions">
+                    <button class="border-0 bg-transparent" @click.prevent="add(suggestion.value)">
+                        <a class="list-group-item" id="aaa" aria-current="true" >{{ suggestion.value }}</a>
+                    </button>
+
                 </div>
-                <input type="text" class="form-control" name="street" v-model="street">
-            </div>
-            <div class="mb-3">
-                <label for="house" class="form-label">Дом</label>
-                <div :class="errors.house ? 'alert alert-success' : 'd-none'" v-if="errors">
-                    {{errors.house}}
-                </div>
-                <input type="text" class="form-control" name="house" v-model="house">
             </div>
             <div class="mb-3">
                 <label for="comment" class="form-label">Коментарий</label>
@@ -75,29 +71,31 @@ export default {
         return {
             user_name: null,
             phone: null,
-            city: null,
-            street: null,
-            house: null,
+            address: null,
             comment: null,
 
             success: null,
             error: null,
             errors: {},
+
+            suggestions: [],
+
+            token: 'fe5af647eda9ca0ec6fcacacad50f45a035eb5aa'
         }
     },
 
     mounted() {
         console.log('Component mounted.')
+        console.log(this.address)
     },
 
     methods: {
         orderRegistration() {
+            console.log(this.address)
             axios.post('/order/create', {
                 user_name: this.user_name,
                 phone: this.phone,
-                city: this.city,
-                street: this.street,
-                house: this.house,
+                address: this.address,
                 comment: this.comment
             })
                 .then(result =>{
@@ -105,13 +103,14 @@ export default {
                     console.log(result)
                     this.success = result.data.success
                     this.error = result.data.error
+                    console.log(this.address)
                     this.user_name = null
                     this.phone = null
-                    this.city = null
-                    this.street = null
-                    this.house = null
+                    this.address = null
                     this.comment = null
-                    window.location.replace('http://localhost/order/item');
+
+                    // if (this.error)
+                    // window.location.replace('http://localhost/order/item');
                 })
                 .catch(error => {
                     if (error.response.status === 422) {
@@ -121,7 +120,67 @@ export default {
                 });
 
         },
+        getAddressSuggestions() {
+            axios({
+                method: 'post',
+                url: 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address',
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "Token " + this.token
+                },
+                data: {
+                    query: this.address,
+                    division: "MUNICIPAL",
+                    "locations": [{
+                        "region": "Забайкальский",
+                        "area": "Могойтуйский",
+                        "settlement": "Могойтуй"
+                        // region	Ограничение по названию региона
+                        // area	района
+                        // city	города
+                        // settlement	населенного пункта
+                        // street	улицы
+                    }]
+
+                }
+
+            })
+                .then(response => {
+                    this.suggestions = response.data.suggestions;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+
+        add(selectedAddress) {
+            this.address = selectedAddress
+            this.suggestions = null
+            // console.log(this.address)
+
+
+        },
     },
 }
+
 </script>
+<style>
+#aaa {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: black;
+    text-decoration: none;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+    background-color: white;
+}
+
+#aaa:hover {
+
+    color: black;
+    background-color: #27e127;
+
+}
+</style>
 

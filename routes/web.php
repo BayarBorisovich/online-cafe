@@ -36,30 +36,35 @@ Route::group(['prefix' => 'email'], function () {
 
 });
 
-Route::group(['prefix' => 'main'], function () {
-    Route::get('/', [MainController::class, 'main'])->name('main');
-    Route::get('/json', [MainController::class, 'getProducts']);
-    Route::get('/product/{productId}', [MainController::class, 'getProduct']);
-    Route::get('/cartProduct', [MainController::class, 'getCartProducts']);
+Route::group(['middleware' => 'auth'], function () {
+
+    Route::group(['prefix' => 'main'], function () {
+        Route::get('/', [MainController::class, 'main'])->name('main');
+        Route::get('/json', [MainController::class, 'getProducts']);
+        Route::get('/product/{productId}', [MainController::class, 'getProduct']);
+        Route::get('/cartProduct', [MainController::class, 'getCartProducts']);
+    });
+
+    Route::group(['prefix' => 'cart'], function (){
+        Route::get('/', [CartController::class, 'getCart'])->name('cart');
+        Route::post('/create/{productId}', [CartController::class, 'addProducts']);
+        Route::patch('/plus/{productId}', [CartController::class, 'addPlus']);
+        Route::patch('/minus/{productId}', [CartController::class, 'addMinus']);
+        Route::get('/products', [CartController::class, 'getProducts']);
+        Route::get('/total', [CartController::class, 'totalInTheBasket']);
+        Route::delete('/delete/{productId}', [CartController::class, 'removeProducts']);
+
+    });
+
+    Route::group(['prefix' => 'order'], function (){
+        Route::get('/', [OrderController::class, 'getOrder'])->name('order');
+        Route::post('/create', [OrderController::class, 'createOrder']);
+        Route::get('/item', [OrderController::class, 'getOrderItems'])->name('items');
+        Route::get('/item/json', [OrderController::class, 'getOrders']);
+        Route::get('/test', [ProductController::class, 'test']);
+    });
 });
 
-Route::group(['prefix' => 'cart'], function (){
-    Route::get('/', [CartController::class, 'getCart'])->name('cart');
-    Route::post('/create/{productId}', [CartController::class, 'addProducts']);
-    Route::patch('/plus/{productId}', [CartController::class, 'addPlus']);
-    Route::patch('/minus/{productId}', [CartController::class, 'addMinus']);
-    Route::get('/products', [CartController::class, 'getProducts']);
-    Route::get('/total', [CartController::class, 'totalInTheBasket']);
-    Route::delete('/delete/{productId}', [CartController::class, 'removeProducts']);
-
-});
-
-Route::group(['prefix' => 'order'], function (){
-    Route::get('/', [OrderController::class, 'getOrder'])->name('order');
-    Route::post('/create', [OrderController::class, 'createOrder']);
-    Route::get('/item', [OrderController::class, 'getOrderItems'])->name('items');
-    Route::get('/item/json', [OrderController::class, 'getOrders']);
-});
 
 Route::get('/test', [ProductController::class, 'test']);
 

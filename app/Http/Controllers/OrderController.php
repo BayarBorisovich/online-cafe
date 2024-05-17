@@ -35,9 +35,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_name' => $data['user_name'],
                 'phone' => $data['phone'],
-                'city' => $data['city'],
-                'street' => $data['street'],
-                'house' => $data['house'],
+                'address' => $data['address'],
                 'comment' => $data['comment'],
                 'user_id' => Auth::id(),
             ]);
@@ -61,7 +59,7 @@ class OrderController extends Controller
             DB::rollBack();
             $error = $exception->getMessage();
 
-            return response()->json(['error' => 'Произошла ошибка при оформлении заказа']);
+            return response()->json(['error' => 'Произошла ошибка при оформлении заказа' . $error]);
         }
         DB::commit();
 
