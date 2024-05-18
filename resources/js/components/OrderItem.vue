@@ -68,7 +68,7 @@ export default {
         getOrders() {
             axios.get('/order/item/json')
                 .then(result => {
-                    console.log(result.data.order)
+                    console.log(result)
                     this.products = result.data.order
                     this.sum = result.data.sum
                     this.totalQuantity = result.data.totalQuantity

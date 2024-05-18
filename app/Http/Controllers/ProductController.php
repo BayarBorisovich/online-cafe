@@ -2,19 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\OrderRequest;
-use App\Models\CartProduct;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+
+
+use App\Models\Cart;
+use App\Services\CartService;
+use App\Services\PaymentService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    public function test(Request $request)
+    private PaymentService $paymentService;
+    private CartService  $cartService;
+    public function __construct(PaymentService $paymentService, CartService $cartService)
     {
-        print_r($request);
+        $this->paymentService = $paymentService;
+        $this->cartService = $cartService;
     }
+    public function test(): RedirectResponse
+    {
+        $user = Auth::user();
+
+        $cart = $user->carts()->first();
+
+        if (!isset($cart)) {
+            $cart = Cart::query()->create([
+                'user_id' => $user->id,
+            ]);
+            dd('empty');
+
+        }
+        dd('no empty');
+    }
+
 }

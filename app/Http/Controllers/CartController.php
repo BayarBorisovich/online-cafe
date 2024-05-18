@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartProduct;
-use App\Models\User;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use App\Services\CartService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    private CartService $cartService;
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
     public function getCart(): View
     {
         return view('cart');
@@ -23,33 +25,29 @@ class CartController extends Controller
 
     public function getProducts(): JsonResponse
     {
-        $products = User::find(Auth::id())
-            ->carts()
-            ->with('products')
-            ->first()
-            ->products()->with('product')->get();
+        $products = $this->cartService->getProducts();
 
         return response()->json([
             'products' => $products
         ]);
     }
 
-    public function addPlus(int $productId): JsonResponse
-    {
-        $product = CartProduct::where('product_id', $productId)->get();
-
-        if (!$product->isEmpty()) {
-            $product->toQuery()->update([
-                'quantity' => $product->first()->quantity + 1
-            ]);
-        }
-
-        return response()->json([]);
-    }
+//    public function addPlus(int $productId): JsonResponse
+//    {
+//        $product = CartProduct::query()->where('product_id', $productId)->get();
+//
+//        if (!$product->isEmpty()) {
+//            $product->toQuery()->update([
+//                'quantity' => $product->first()->quantity + 1
+//            ]);
+//        }
+//
+//        return response()->json([]);
+//    }
 
     public function addMinus(int $productId): JsonResponse
     {
-        $product = CartProduct::where('product_id', $productId)->get();
+        $product = CartProduct::query()->where('product_id', $productId)->get();
 
         if (!$product->isEmpty()) {
 
@@ -69,20 +67,21 @@ class CartController extends Controller
 
     public function addProducts(int $productId): Response
     {
-        $id = Auth::id();
+        $user = Auth::user();
 
-        $cart = Cart::find($id);
+        $cart = $user->carts()->first();
 
-        if (empty($cart)) {
-            $cart = Cart::create([
-                'user_id' => $id,
+        if (!isset($cart)) {
+            $cart = Cart::query()->create([
+                'user_id' => $user->id,
             ]);
+
         }
 
-        $product = CartProduct::where('product_id', $productId)->get();
+        $product = CartProduct::query()->where('product_id', $productId)->get();
 
         if ($product->isEmpty()) {
-            CartProduct::create([
+            CartProduct::query()->create([
                 'cart_id' => $cart->id,
                 'product_id' => $productId,
                 'quantity' => 1,
@@ -98,29 +97,18 @@ class CartController extends Controller
 
     public function totalInTheBasket(): JsonResponse
     {
-        $products = User::find(Auth::id())
-            ->carts()
-            ->with('products')
-            ->first()
-            ->products()->with('product')->get();
-
-        $orderSum = [];
-        $totalQuantity = [];
-        foreach ($products as $cartProduct) {
-            $totalQuantity[] = $cartProduct->quantity;
-            $orderSum[] = $cartProduct->product->price * $cartProduct->quantity;
-        }
+        $totalInTheBasket = $this->cartService->totalInTheBasket();
 
         return response()->json([
-            'totalQuantity' => array_sum($totalQuantity),
-            'orderSum' => round(array_sum($orderSum), 2)
+            'totalQuantity' => $totalInTheBasket ? $totalInTheBasket['totalQuantity'] : 0,
+            'orderSum' => $totalInTheBasket ? $totalInTheBasket['orderSum'] : 0,
         ]);
 
     }
 
     public function removeProducts(int $productId): Response
     {
-        CartProduct::where('product_id', $productId)->delete();
+        CartProduct::query()->where('product_id', $productId)->delete();
 
         return response([]);
     }

@@ -35,7 +35,7 @@ class MainController extends Controller
 
     public function getProducts(): JsonResponse
     {
-        $categories = Category::with('products')->get()->sort()->values();
+        $categories = Category::query()->with('products')->get()->sort()->values();
 
 
         return response()->json([
@@ -44,7 +44,7 @@ class MainController extends Controller
     }
     public function getProduct(int $productId): JsonResponse
     {
-        $product = Product::find($productId);
+        $product = Product::query()->find($productId);
 
         return response()->json([
             'product' => $product
@@ -52,7 +52,7 @@ class MainController extends Controller
     }
     public function getCartProducts(): JsonResponse
     {
-        $cartProducts = User::find(Auth::id())
+        $cartProducts = User::query()->find(Auth::id())
             ->carts()
             ->with('products')
             ->first()->products;

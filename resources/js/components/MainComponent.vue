@@ -56,7 +56,7 @@
                         <li class="side-menu ">
                             <a href="/cart">
                                 <i class="fa fa-shopping-bag">
-                                    <p class="mx-2">Корзина: {{ totalQuantity }}</p>
+                                    <p class="mx-2">Корзина: {{ totalQuantity ? totalQuantity : 0 }}</p>
                                 </i>
                             </a>
                         </li>
@@ -82,6 +82,7 @@
     <!-- End Top Search -->
 
     <!-- Start Products  -->
+
     <div class="products-box" v-for="category in categories">
         <div class="container">
             <div class="row">
@@ -239,6 +240,7 @@ export default {
                     this.getProducts()
                     this.totalInTheBasket()
                     this.getCartProduct()
+                    console.log(result)
                 })
                 .catch(error => {
                     console.log(error)
@@ -269,6 +271,7 @@ export default {
         totalInTheBasket() {
             axios.get('/cart/total')
                 .then(result => {
+                    console.log(result)
                     this.totalQuantity = result.data.totalQuantity
                     this.orderSum = result.data.orderSum
                 })

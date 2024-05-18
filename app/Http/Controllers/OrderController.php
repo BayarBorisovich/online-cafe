@@ -5,49 +5,58 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\CartService;
+use App\Services\PaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 
 class OrderController extends Controller
 {
+    private CartService  $cartService;
+    private PaymentService  $paymentService;
+    public function __construct(CartService $cartService, PaymentService $paymentService)
+    {
+        $this->cartService = $cartService;
+        $this->paymentService = $paymentService;
+    }
     public function getOrder(): View
     {
         return view('order');
     }
 
-    public function createOrder(OrderRequest $request): JsonResponse|RedirectResponse
+    public function createOrder(OrderRequest $request): RedirectResponse|JsonResponse
     {
         $data = $request->validated();
 
-        $products = Auth::user()
-            ->carts()
-            ->with('products')
-            ->first()
-            ->products()->with('product')->get();
+        $products = $this->cartService->getProducts();
+
+        $totalInTheBasket = $this->cartService->totalInTheBasket();
 
         DB::beginTransaction();
 
         try {
-            $order = Order::create([
+
+            $order = Auth::user()->orders()->create([
                 'user_name' => $data['user_name'],
                 'phone' => $data['phone'],
                 'address' => $data['address'],
                 'comment' => $data['comment'],
-                'user_id' => Auth::id(),
             ]);
 
             foreach ($products as $cartProduct) {
-                OrderItem::create([
+                OrderItem::query()->create([
                     'order_id' => $order->id,
                     'product_id' => $cartProduct->product->id,
                     'quantity' => $cartProduct->quantity,
                     'price' => $cartProduct->product->price,
                 ]);
            }
+            $path = $this->paymentService->createPayment($totalInTheBasket['orderSum'], $order->id, $order->user_name);
 
             Auth::user()
                 ->carts()
@@ -57,13 +66,15 @@ class OrderController extends Controller
 
         } catch (\Exception $exception) {
             DB::rollBack();
-            $error = $exception->getMessage();
+            Log::channel('daily')->error('Произошла ошибка при оформлении заказа ' . $exception->getMessage() . ' ' . $exception->getLine());
 
-            return response()->json(['error' => 'Произошла ошибка при оформлении заказа' . $error]);
+            return response()->json(['error' => 'Произошла ошибка при оформлении заказа']);
         }
         DB::commit();
 
-        return redirect()->route('items');
+        return response()->json([
+        'path' => $path,
+        ]);
     }
 
     public function getOrderItems(): View
@@ -88,7 +99,7 @@ class OrderController extends Controller
 
         return response()->json([
             'order' => $products,
-            'sum' => array_sum($orderSum),
+            'sum' => round(array_sum($orderSum), 2),
             'totalQuantity' => array_sum($totalQuantity),
         ]);
     }

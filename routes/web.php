@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 
 Auth::routes();
 
+
 Route::group(['prefix' => 'email'], function () {
 
     Route::get('/verify', function () {

@@ -39,7 +39,7 @@
 
             <div class="mb-3">
                 <label for="address" class="form-label">
-                    Адресс: укажите улицу и дом
+                    Адрес: укажите улицу и дом
                 </label>
                 <div :class="errors.address ? 'alert alert-success' : 'd-none'" v-if="errors">
                     {{errors.address}}
@@ -78,6 +78,8 @@ export default {
             error: null,
             errors: {},
 
+            path: null,
+
             suggestions: [],
 
             token: 'fe5af647eda9ca0ec6fcacacad50f45a035eb5aa'
@@ -100,17 +102,22 @@ export default {
             })
                 .then(result =>{
                     console.log('ok')
-                    console.log(result)
+                    console.log(result.data.path)
                     this.success = result.data.success
                     this.error = result.data.error
                     console.log(this.address)
+                    this.path = result.data.path
+
                     this.user_name = null
                     this.phone = null
                     this.address = null
                     this.comment = null
 
-                    // if (this.error)
-                    // window.location.replace('http://localhost/order/item');
+                    if (!this.error) {
+                        window.location.replace(this.path);
+                    }
+                    console.log(this.error)
+
                 })
                 .catch(error => {
                     if (error.response.status === 422) {
