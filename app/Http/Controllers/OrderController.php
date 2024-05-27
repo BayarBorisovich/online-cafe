@@ -37,6 +37,8 @@ class OrderController extends Controller
 
         $totalInTheBasket = $this->cartService->totalInTheBasket();
 
+        $orderSum = $totalInTheBasket['orderSum'];
+
         DB::beginTransaction();
 
         try {
@@ -56,7 +58,18 @@ class OrderController extends Controller
                     'price' => $cartProduct->product->price,
                 ]);
            }
-            $path = $this->paymentService->createPayment($totalInTheBasket['orderSum'], $order->id, $order->user_name);
+            $transaction = $this->paymentService
+                ->createTransaction(
+                    $order->id,
+                    $orderSum
+                );
+
+            $path = $this->paymentService
+                ->createPayment(
+                    $orderSum,
+                    $order->id, $order->user_name,
+                    $transaction->id
+                );
 
             Auth::user()
                 ->carts()

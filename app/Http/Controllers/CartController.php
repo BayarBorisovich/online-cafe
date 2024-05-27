@@ -32,18 +32,18 @@ class CartController extends Controller
         ]);
     }
 
-//    public function addPlus(int $productId): JsonResponse
-//    {
-//        $product = CartProduct::query()->where('product_id', $productId)->get();
-//
-//        if (!$product->isEmpty()) {
-//            $product->toQuery()->update([
-//                'quantity' => $product->first()->quantity + 1
-//            ]);
-//        }
-//
-//        return response()->json([]);
-//    }
+    public function addPlus(int $productId): JsonResponse
+    {
+        $product = CartProduct::query()->where('product_id', $productId)->get();
+
+        if (!$product->isEmpty()) {
+            $product->toQuery()->update([
+                'quantity' => $product->first()->quantity + 1
+            ]);
+        }
+
+        return response()->json([]);
+    }
 
     public function addMinus(int $productId): JsonResponse
     {
@@ -106,9 +106,9 @@ class CartController extends Controller
 
     }
 
-    public function removeProducts(int $productId): Response
+    public function removeProducts(CartProduct $cartProduct): Response
     {
-        CartProduct::query()->where('product_id', $productId)->delete();
+        $cartProduct->delete();
 
         return response([]);
     }

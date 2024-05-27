@@ -13,7 +13,7 @@
     <!-- Start Main Top -->
     <header class="main-header">
         <!-- Start Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default bootsnav,">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-default fa">
             <div class="container">
                 <!-- Start Header Navigation -->
                 <div class="navbar-header">
@@ -30,34 +30,24 @@
                 <div class="collapse navbar-collapse" id="navbar-menu" v-for="category in categories">
                     <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
                         <li class="nav-item active">
-                            <a class="nav-link" :href="'#'+category.id">{{ category.name }}</a>
+                            <a class="nav-link fa" :href="'#'+category.id">{{ category.name }}</a>
                         </li>
-                        <!--                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>-->
-                        <!--                        <li class="dropdown">-->
-                        <!--                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">SHOP</a>-->
-                        <!--                            <ul class="dropdown-menu">-->
-                        <!--                                <li><a href="shop.html">Sidebar Shop</a></li>-->
-                        <!--                                <li><a href="shop-detail.html">Shop Detail</a></li>-->
-                        <!--                                <li><a href="cart.html">Cart</a></li>-->
-                        <!--                                <li><a href="checkout.html">Checkout</a></li>-->
-                        <!--                                <li><a href="my-account.html">My Account</a></li>-->
-                        <!--                                <li><a href="wishlist.html">Wishlist</a></li>-->
-                        <!--                            </ul>-->
-                        <!--                        </li>-->
-                        <!--                        <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>-->
-                        <!--                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>-->
-                    </ul>
+                       </ul>
                 </div>
                 <!-- /.navbar-collapse -->
                 <!-- Start Atribute Navigation -->
                 <div class="attr-nav">
                     <ul>
                         <li class="search"><a href="#"><i class="fa fa-search"></i></a></li>
-                        <li class="side-menu ">
-                            <a href="/cart">
-                                <i class="fa fa-shopping-bag">
-                                    <p class="mx-2">Корзина: {{ totalQuantity ? totalQuantity : 0 }}</p>
-                                </i>
+
+                        <li class="side-menu">
+                            <!-- Button trigger modal -->
+                            <a>
+                                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CartsModal">
+                                    <i class="fa fa-shopping-bag">
+                                        <p class="mx-2">Корзина: {{ totalQuantity ? totalQuantity : 0 }}</p>
+                                    </i>
+                                </button>
                             </a>
                         </li>
                     </ul>
@@ -87,9 +77,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="title-all text-left">
+                    <div class="title-all text-left fa">
                         <h1 :id="category.id"> {{ category.name }} </h1>
-                        <!--                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>-->
                     </div>
                 </div>
             </div>
@@ -99,14 +88,9 @@
                     <div class="products-single fix box">
                         <div class="box-img-hover mt-3" type="button" data-bs-toggle="modal"
                              data-bs-target="#onlineCafeModal" @click.prevent="getOneProduct(product.id)">
-                            <!--                            можно добавить значок 'SALE'-->
-                            <!--                            <div class="type-lb">-->
-                            <!--                                <p class="sale">Sale</p>-->
-                            <!--                            </div>-->
-                            <!--                            конец 'SALE'-->
                             <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
-                        <div class="why-text col-12">
+                        <div class="why-text col-12 fa">
                             <div type="button" data-bs-toggle="modal"
                                  data-bs-target="#onlineCafeModal" @click.prevent="getOneProduct(product.id)">
                                 <h4>{{ product.name }}</h4>
@@ -127,7 +111,7 @@
                                                 class="border-0 bg-transparent">
                                             <i class="fa fa-minus" aria-hidden="true"></i>
                                         </button>
-                                        <div class="m-auto" v-for="cartProduct in cartProducts">
+                                        <div class="m-auto" v-for="cartProduct in products">
                                             <div v-if="product.id === cartProduct.product_id">
                                                 <h5 class="my-auto"> {{cartProduct.quantity}}</h5>
                                             </div>
@@ -149,18 +133,13 @@
     </div>
     <!-- End Products  -->
 
-    <!-- Button trigger modal -->
-    <!--                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#onlineCafeModal">-->
-    <!--                            Launch demo modal-->
-    <!--                        </button>-->
-
-    <!-- Modal -->
+    <!-- Modal product-->
     <div class="modal" id="onlineCafeModal" tabindex="-1" aria-labelledby="onlineCafeModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="row justify-content-between">
+                    <div class="row justify-content-between fa">
                         <div class="box-img-hover mt-3 col-6">
                             <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
                         </div>
@@ -184,6 +163,103 @@
     </div>
     <!-- Modal -->
 
+    <!-- Modal cart -->
+    <div class="modal fade" id="CartsModal" tabindex="-1" aria-labelledby="CartsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered fa">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fw-bolder" id="CartsModalLabel">{{ totalQuantity + ' товаров на ' + orderSum + ' р.'}} </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Start Cart  -->
+                    <div class="cart-box-main">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-12 " v-for="product in products">
+                                        <div class="row justify-content-between" >
+                                            <div class="col">
+                                                <img class="img-fluid" src="/asset/images/img-pro-01.jpg"  alt=""/>
+                                            </div>
+                                            <div class="col text-left">
+                                                <h5 class="fw-bolder">{{ product.product.name }}</h5>
+                                                <p class="fw-lighter">{{ product.product.weight }} гр.</p>
+                                            </div>
+                                            <div class="col text-right">
+                                                <button @click.prevent="remove(product.id)" type="submit"
+                                                        class="border-0 bg-transparent">
+                                                    <i class="fa fa-window-close" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row mb-3">
+                                            <div class="col-10">
+                                                <h5 class="fw-bolder">{{ product.product.price }} р. </h5>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="row">
+                                                    <div class="col-1">
+                                                        <button @click.prevent="addMinus(product.product_id)" type="button"
+                                                                class="border-0 bg-transparent">
+                                                            <i class="fa fa-minus" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <h5 class="fw-bolder">{{ product.quantity }}</h5>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <button @click.prevent="addProduct(product.product_id)" type="button"
+                                                                class="border-0 bg-transparent">
+                                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="border-bottom border-4 border-dark">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- End Cart -->
+                </div>
+                <div class="modal-footer row">
+                    <div>
+                        <a href="/order">
+                            <div class="update-box">
+                                <input value="Оформить заказ" type="submit">
+                            </div>
+                        </a>
+                    </div>
+
+                    <div>
+                        <div class="order-box">
+                            <div class="d-flex gr-total">
+                                <h5>В корзине</h5>
+                            </div>
+                            <hr>
+                            <div class="d-flex gr-total">
+                                <h3>Товаров</h3>
+                                <div class="ml-auto h5">{{ totalQuantity }} шт.</div>
+                            </div>
+                            <div class="d-flex gr-total mb-3">
+                                <h3>На сумму</h3>
+                                <div class="ml-auto h5">{{ orderSum }} р.</div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
 <script>
@@ -195,12 +271,13 @@ export default {
     data() {
         return {
             categories: null,
-            cartProducts: null,
             productId: null,
             totalQuantity: null,
             orderSum: null,
             oneProduct: [],
             empty: null,
+
+            products: null
         }
     },
 
@@ -208,28 +285,30 @@ export default {
         console.log('Component mounted.')
         this.getProducts()
         this.totalInTheBasket()
-        this.getCartProduct()
+        this.getCartProducts()
     },
 
     methods: {
         getProducts() {
-            axios.get('/main/json')
+            axios.get('/api/main/category/products')
                 .then(result => {
-                    this.categories = result.data.categories
+                    console.log(result)
+                    this.categories = result.data.category
+                })
+        },
+
+        getCartProducts() {
+            axios.get('/cart/products')
+                .then(result => {
+                    console.log(result.data.products.length)
+                    this.products = result.data.products
                 })
         },
 
         getOneProduct(id) {
-            axios.get(`/main/product/${id}`)
+            axios.get(`/api/main/product/${id}`)
                 .then(result => {
                     this.oneProduct = result.data.product
-                })
-        },
-
-        getCartProduct() {
-            axios.get('/main/cartProduct')
-                .then(result => {
-                    this.cartProducts = result.data.cartProducts
                 })
         },
 
@@ -239,8 +318,9 @@ export default {
                 .then(result => {
                     this.getProducts()
                     this.totalInTheBasket()
-                    this.getCartProduct()
-                    console.log(result)
+
+                    this.getCartProducts()
+                    // console.log(result)
                 })
                 .catch(error => {
                     console.log(error)
@@ -252,7 +332,8 @@ export default {
                 .then(result => {
                     this.getProducts()
                     this.totalInTheBasket()
-                    this.getCartProduct()
+
+                    this.getCartProducts()
 
                     this.empty = result.data
                     this.isEmptyProduct()
@@ -271,7 +352,7 @@ export default {
         totalInTheBasket() {
             axios.get('/cart/total')
                 .then(result => {
-                    console.log(result)
+                    // console.log(result)
                     this.totalQuantity = result.data.totalQuantity
                     this.orderSum = result.data.orderSum
                 })
@@ -281,17 +362,28 @@ export default {
             if ( this.empty === 'empty') {
                 this.productId = null
             }
-        }
+        },
+
+        remove(id) {
+            axios.delete(`/cart/delete/${id}`)
+                .then(result => {
+                    console.log('delete')
+                    this.getProducts()
+                    this.totalInTheBasket()
+
+                    this.getCartProducts()
+                })
+        },
     },
 
     computed: {
-        test(id) {
-            return this.oneProduct.filter(function (product) {
-                if (product.product_id === id) {
-                    return true
-                }
-            })
-        }
+        // test(id) {
+        //     return this.oneProduct.filter(function (product) {
+        //         if (product.product_id === id) {
+        //             return true
+        //         }
+        //     })
+        // }
     }
 }
 </script>

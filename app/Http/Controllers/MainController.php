@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\User;
+
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class MainController extends Controller
 {
@@ -31,34 +26,5 @@ class MainController extends Controller
     public function main(): View
     {
         return view('main.index');
-    }
-
-    public function getProducts(): JsonResponse
-    {
-        $categories = Category::query()->with('products')->get()->sort()->values();
-
-
-        return response()->json([
-            'categories' => $categories
-        ]);
-    }
-    public function getProduct(int $productId): JsonResponse
-    {
-        $product = Product::query()->find($productId);
-
-        return response()->json([
-            'product' => $product
-        ]);
-    }
-    public function getCartProducts(): JsonResponse
-    {
-        $cartProducts = User::query()->find(Auth::id())
-            ->carts()
-            ->with('products')
-            ->first()->products;
-
-        return response()->json([
-            'cartProducts' => $cartProducts
-        ]);
     }
 }

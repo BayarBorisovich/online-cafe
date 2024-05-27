@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Transaction;
 use App\Services\CartService;
 use App\Services\PaymentService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use YooKassa\Model\Notification\NotificationEventType;
+use YooKassa\Model\Notification\NotificationFactory;
+use YooKassa\Model\Notification\NotificationSucceeded;
+use YooKassa\Model\Notification\NotificationWaitingForCapture;
 
 class ProductController extends Controller
 {
@@ -19,20 +26,25 @@ class ProductController extends Controller
         $this->paymentService = $paymentService;
         $this->cartService = $cartService;
     }
-    public function test(): RedirectResponse
+    public function test()
     {
-        $user = Auth::user();
+//        $a = Auth::user()->orders()
+//            ->with('transactions')->first()
+//            ->transactions()->first();
+//        $transaction = Transaction::query()->find(8);
 
-        $cart = $user->carts()->first();
+//        $transaction = $this->paymentService
+//            ->createTransaction(
+//                9,
+//                99999
+//            );
+//        $a = Auth::user()
+//            ->carts()
+//            ->with('products')
+//            ->first()
+//            ->products()->with('product')->orderBy('id', 'desc')->get();
 
-        if (!isset($cart)) {
-            $cart = Cart::query()->create([
-                'user_id' => $user->id,
-            ]);
-            dd('empty');
-
-        }
-        dd('no empty');
+        dd($this->cartService->getProducts());
     }
 
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
@@ -13,7 +12,7 @@ class CartService
             ->carts()
             ->with('products')
             ->first()
-            ->products()->with('product')->get();
+            ->products()->with('product')->orderBy('created_at', 'desc')->get();
     }
     public function totalInTheBasket(): array|null
     {

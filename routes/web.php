@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\CartController;
 
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -37,36 +40,43 @@ Route::group(['prefix' => 'email'], function () {
 
 });
 
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    Route::get('/', [IndexController::class, 'index'])->name('admin.index');
+    Route::group(['prefix' => 'category'], function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('admin.category');
+    });
+
+});
+
 Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'main'], function () {
         Route::get('/', [MainController::class, 'main'])->name('main');
-        Route::get('/json', [MainController::class, 'getProducts']);
-        Route::get('/product/{productId}', [MainController::class, 'getProduct']);
-        Route::get('/cartProduct', [MainController::class, 'getCartProducts']);
     });
 
-    Route::group(['prefix' => 'cart'], function (){
+    Route::group(['prefix' => 'cart'], function () {
         Route::get('/', [CartController::class, 'getCart'])->name('cart');
         Route::post('/create/{productId}', [CartController::class, 'addProducts']);
         Route::patch('/plus/{productId}', [CartController::class, 'addPlus']);
         Route::patch('/minus/{productId}', [CartController::class, 'addMinus']);
         Route::get('/products', [CartController::class, 'getProducts']);
         Route::get('/total', [CartController::class, 'totalInTheBasket']);
-        Route::delete('/delete/{productId}', [CartController::class, 'removeProducts']);
+        Route::delete('/delete/{cartProduct}', [CartController::class, 'removeProducts']);
 
     });
 
-    Route::group(['prefix' => 'order'], function (){
+    Route::group(['prefix' => 'order'], function () {
         Route::get('/', [OrderController::class, 'getOrder'])->name('order');
         Route::post('/create', [OrderController::class, 'createOrder']);
         Route::get('/item', [OrderController::class, 'getOrderItems'])->name('items');
         Route::get('/item/json', [OrderController::class, 'getOrders']);
         Route::get('/test', [ProductController::class, 'test']);
     });
+
+    Route::post('/payments/callback', [PaymentController::class, 'callback'])->name('callback');
 });
 
 
-Route::get('/test', [ProductController::class, 'test']);
+Route::match(['get', 'post'], '/test', [ProductController::class, 'test'])->name('test');
 
 

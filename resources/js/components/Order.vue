@@ -6,7 +6,7 @@
                 <div class="col-lg-12">
                     <h2>Оформление заказа</h2>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/cart">Корзина</a></li>
+                        <li class="breadcrumb-item"><a href="/main">Магазин</a></li>
                         <li class="breadcrumb-item active">Оформление заказа</li>
                     </ul>
                 </div>
@@ -22,7 +22,7 @@
         {{error}}
     </div>
 
-    <div class="container-sm my-3">
+    <div class="container-sm my-3 fa">
         <div class="col-6">
             <h5>Доставка осуществляется в пределах пгт. Могойтуй</h5>
             <div class="mb-3">

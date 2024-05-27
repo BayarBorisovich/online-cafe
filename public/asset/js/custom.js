@@ -204,7 +204,7 @@
        ................................................. */
 
     $(function () {
-        $("#slider-range").slider({
+        $("#slider-range") . slider({
             range: true,
             min: 0,
             max: 4000,
@@ -221,7 +221,7 @@
        NiceScroll
        ................................................. */
 
-    $(".brand-box").niceScroll({
+    $(".brand-box"). niceScroll({
         cursorcolor: "#9b9b9c",
     });
 
