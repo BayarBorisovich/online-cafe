@@ -56,7 +56,27 @@
                         <a @click.prevent="changeCategoryId(category.id, category.name)" class="btn btn-success">Изменить</a>
                     </td>
                     <td>
-                        <button type="submit" @click.prevent="deleteCategory(category.id)" class="btn btn-danger">Удалить</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#categoryDeleteModal">
+                            Удалить
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="categoryDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"> Подтвердите пожалуйста</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы уверены что хотите удалить категорию ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                                        <button type="submit" @click.prevent="deleteCategory(category.id)" class="btn btn-danger" data-bs-dismiss="modal">Да удалить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr :class=" isId(category.id) ? '' : 'd-none'">
@@ -74,11 +94,9 @@
             </tbody>
         </table>
     </div>
-
 </template>
 
 <script>
-import axios from "axios";
 
 export default {
     name: "Category",
@@ -98,6 +116,7 @@ export default {
     mounted() {
         console.log('Component mounted.')
         this.getCategory()
+        this.success = null
     },
 
     methods: {
@@ -152,4 +171,6 @@ export default {
     }
 }
 </script>
+
+
 

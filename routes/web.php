@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\CartController;
 
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -45,6 +46,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::group(['prefix' => 'category'], function () {
         Route::get('/', [CategoryController::class, 'index'])->name('admin.category');
     });
+    Route::group(['prefix' => 'product'], function () {
+        Route::get('/', [ProductController::class, 'index'])->name('admin.product');
+    });
 
 });
 
@@ -77,6 +81,6 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 
-Route::match(['get', 'post'], '/test', [ProductController::class, 'test'])->name('test');
+Route::match(['get', 'post'], '/test', [TestController::class, 'test'])->name('test');
 
 

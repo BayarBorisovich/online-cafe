@@ -17,7 +17,7 @@ use YooKassa\Model\Notification\NotificationFactory;
 use YooKassa\Model\Notification\NotificationSucceeded;
 use YooKassa\Model\Notification\NotificationWaitingForCapture;
 
-class ProductController extends Controller
+class TestController extends Controller
 {
     private PaymentService $paymentService;
     private CartService  $cartService;
