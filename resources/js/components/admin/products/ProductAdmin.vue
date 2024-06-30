@@ -59,8 +59,8 @@
 
             <div class="form-group mt-3">
                 <label>Выбрать категорию</label>
-                <select class="form-control">
-                    <template v-for="category in categories">
+                <select class="form-control" v-model="category_id" name="category_id">
+                    <template v-for="category in categories" >
                         <option :value="category.id">{{ category.name }}</option>
                     </template>
                 </select>
@@ -82,6 +82,7 @@
                 <th scope="col">Описание</th>
                 <th scope="col">Вес</th>
                 <th scope="col">Цена</th>
+                <th scope="col">Категория</th>
                 <th scope="col">Удалить</th>
             </tr>
             </thead>
@@ -94,6 +95,7 @@
                     <td>{{ product.description }}</td>
                     <td>{{ product.weight }}</td>
                     <td>{{ product.price }}</td>
+                    <td>{{ product.category }}</td>
                     <td>
                         <a @click.prevent="changeProduct(product.id, product.name, product.structure, product.description, product.weight, product.price)" class="btn btn-success">Изменить</a>
                     </td>
@@ -152,6 +154,8 @@ export default {
             product_description: null,
             product_weight: null,
             product_price: null,
+
+            category_id: null
         }
     },
 
@@ -166,6 +170,7 @@ export default {
             axios.get('/api/admin/product/get')
                 .then(result => {
                     this.products = result.data
+                    console.log(this.products)
                 })
         },
 
@@ -197,7 +202,8 @@ export default {
                 structure: this.product_structure,
                 description: this.product_description,
                 weight: this.product_weight,
-                price: this.product_price
+                price: this.product_price,
+                category_id: this.category_id
             })
                 .then(result => {
                     console.log(result)
