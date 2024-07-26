@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImageRequest;
 use App\Http\Requests\ProductRequest;
 use App\Models\CategoryProduct;
 use App\Models\Product;
@@ -12,40 +13,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
-class ProductController extends Controller
+class ImageController extends Controller
 {
     public function index(): View
     {
         return view('admin.product.index');
     }
 
-    public function create(ProductRequest $request): JsonResponse
+    public function create(ImageRequest $request): JsonResponse
     {
-        try {
-            $data = $request->validated();
-
-            $categoryId = $data['category_id'];
-            unset($data['category_id']);
-
-            DB::beginTransaction();
-
-            try {
-                $product = Product::query()->create($data);
-
-                $product->category()->attach($categoryId);
-            } catch (\Exception $exception) {
-                DB::rollBack();
-                Log::channel('daily')->error('Произошла ошибка при добавлении продукта ' . $exception->getMessage() . ' ' . $exception->getLine());
-
-                return response()->json(['error' => 'Произошла ошибка при добавлении продукта']);
-            }
-            DB::commit();
-
-        } catch (\Throwable $exception) {
-            Log::channel('daily')->error('Произошла ошибка при добавлении продукта ' . $exception->getMessage() . ' ' . $exception->getLine());
-
-            return response()->json(['error' => 'Произошла ошибка при добавлении продукта']);
-        }
+       dd($request);
 
         return response()->json(['success' => 'Продукт успешно добавлен']);
     }

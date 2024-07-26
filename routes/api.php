@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 
+use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ApiControllers\MainController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,12 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::get('/get', [ProductController::class, 'getProducts'])->name('admin.product.get');
         Route::patch('/update/{product}', [ProductController::class, 'update'])->name('admin.product.update');
         Route::delete('/delete/{product}', [ProductController::class, 'delete'])->name('admin.product.delete');
+    });
+    Route::group(['prefix' => 'image'], function () {
+        Route::post('/create', [ImageController::class, 'create'])->name('admin.image.create');
+        Route::get('/get', [ImageController::class, 'getImage'])->name('admin.image.get');
+        Route::patch('/update/{image}', [ImageController::class, 'update'])->name('admin.image.update');
+        Route::delete('/delete/{image}', [ImageController::class, 'delete'])->name('admin.image.delete');
     });
 });
 
