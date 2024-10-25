@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\CategoryProduct;
+use App\Models\Image;
 use App\Models\Product;
+use Carbon\Carbon;
 use http\Env\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -21,18 +24,32 @@ class ProductController extends Controller
 
     public function create(ProductRequest $request): JsonResponse
     {
+
         try {
             $data = $request->validated();
-
             $categoryId = $data['category_id'];
+            $images = $data['images'];
             unset($data['category_id']);
+            unset($data['images']);
 
             DB::beginTransaction();
 
             try {
                 $product = Product::query()->create($data);
-
                 $product->category()->attach($categoryId);
+
+
+                foreach ($images as $image) {
+                    $name = md5(Carbon::now() . '_' . $image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+                    $path = Storage::disk('public')->putFileAs('/images', $image, $name);
+
+                    Image::create([
+                        'name' => $product->name,
+                        'path' => $path,
+                        'url' => url('/storage/' . $path),
+                        'product_id' => $product->id
+                    ]);
+                }
             } catch (\Exception $exception) {
                 DB::rollBack();
                 Log::channel('daily')->error('Произошла ошибка при добавлении продукта ' . $exception->getMessage() . ' ' . $exception->getLine());
@@ -49,6 +66,7 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'Продукт успешно добавлен']);
     }
+
     public function update(ProductRequest $request, Product $product): JsonResponse
     {
         try {

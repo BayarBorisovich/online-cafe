@@ -12,7 +12,7 @@ class MainController extends Controller
 
     public function getProducts(): JsonResponse
     {
-        $categories = Category::query()->with('products')->get()->sort()->values();
+        $categories = Category::query()->with('products.images')->get()->sort()->values();
 
         return response()->json([
             'category' => $categories
@@ -20,7 +20,7 @@ class MainController extends Controller
     }
     public function getProduct(int $productId): JsonResponse
     {
-        $product = Product::query()->find($productId);
+        $product = Product::query()->find($productId)->with('images')->first();
 
         return response()->json([
             'product' => $product

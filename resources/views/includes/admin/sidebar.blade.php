@@ -7,7 +7,7 @@
                 <i class="nav-icon fa fa-list"></i>
                 <p>
                     Категории
-                    <span class="badge badge-info right">2</span>
+                    <span class="badge badge-info right"></span>
                 </p>
             </a>
         </li>
@@ -16,7 +16,7 @@
                 <i class="nav-icon fa fa-shopping-basket"></i>
                 <p>
                     Продукты
-                    <span class="badge badge-info right">2</span>
+                    <span class="badge badge-info right"></span>
                 </p>
             </a>
         </li>

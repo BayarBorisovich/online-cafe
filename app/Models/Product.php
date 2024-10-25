@@ -25,4 +25,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Cart::class, 'cart_product');
     }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(Image::class);
+    }
 }

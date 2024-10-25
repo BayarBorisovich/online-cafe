@@ -86,9 +86,22 @@
             <div class="row special-list">
                 <div class="col-lg-3 col-md-6 special-grid best-seller" v-for="product in category.products">
                     <div class="products-single fix box">
-                        <div class="box-img-hover mt-3" type="button" data-bs-toggle="modal"
-                             data-bs-target="#onlineCafeModal" @click.prevent="getOneProduct(product.id)">
-                            <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                        <div class="box-img-hover mt-3">
+                            <div :id="'CarouselImagesOfASingleProduct' + product.id" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item" v-for="(image, index) in product.images" :class="{ active: index === 0 }">
+                                        <img :src="image.url" class="img-fluid d-block w-100" :alt="product.name + ' image ' + (index + 1)">
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Предыдущий</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Следующий</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="why-text col-12 fa">
                             <div type="button" data-bs-toggle="modal"
@@ -141,12 +154,28 @@
                 <div class="modal-body">
                     <div class="row justify-content-between fa">
                         <div class="box-img-hover mt-3 col-6">
-                            <img src="/asset/images/img-pro-01.jpg" class="img-fluid" alt="Image">
+                            <div class="box-img-hover mt-3">
+                                <div :id="'carouselExampleFad-' + oneProduct.id" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item" v-for="(image, index) in oneProduct.images" :class="{ active: index === 0 }">
+                                            <img :src="image.url" class="img-fluid d-block w-100" :alt="oneProduct.name + ' image ' + (index + 1)">
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" :data-bs-target="'#carouselExampleFad-' + oneProduct.id" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Предыдущий</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" :data-bs-target="'#carouselExampleFad-' + oneProduct.id" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Следующий</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="why-text col-6">
                             <h4>{{ oneProduct.name }}</h4>
                             <h6>{{ oneProduct.weight }} гр.</h6>
-                            <h6>{{ oneProduct.description }}</h6>
+                            <h6>{{ oneProduct.structure }}</h6>
                             <h5 class="my-auto"> {{ oneProduct.price }} р.</h5>
                         </div>
                     </div>

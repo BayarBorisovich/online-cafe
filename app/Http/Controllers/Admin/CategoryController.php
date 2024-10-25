@@ -20,7 +20,7 @@ class CategoryController extends Controller
     {
         try {
             $data = $request->validated();
-            Category::query()->create($data);
+            $d = Category::query()->create($data);
         } catch (\Throwable $exception) {
             Log::channel('daily')->error('Произошла ошибка при создании категории ' . $exception->getMessage() . ' ' . $exception->getLine());
 
@@ -47,6 +47,10 @@ class CategoryController extends Controller
     public function getCategories(): JsonResponse
     {
         $categories = Category::query()->orderBy('id', 'asc')->get();
+
+        if ($categories->isEmpty()) {
+            return response()->json(['empty' => 'Добавьте категорию']);
+        }
 
         return response()->json($categories);
     }

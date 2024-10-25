@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Transaction;
@@ -22,7 +23,7 @@ class TestController extends Controller
 {
     public function test()
     {
-        $product = Product::with('category')->get();
+        $product = Product::query()->find(2)->with('images')->first();
 
         dd($product);
     }

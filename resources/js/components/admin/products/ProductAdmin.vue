@@ -68,6 +68,15 @@
                     </template>
                 </select>
             </div>
+            <div>
+                <div>
+                    <label for="name" class="form-label md-3">Загрузите картинку</label>
+                </div>
+                <div ref="dropzone" class="btn col-12 bg-dark text-center text-light">
+                    Загрузите
+                </div>
+            </div>
+
         </div>
 <!--        <div class="mb-3">-->
 <!--            <label class="form-label" for="inputImage">Загрузите фото продукта:</label>-->
@@ -80,8 +89,8 @@
 <!--        <div class="mb-3 text-right">-->
 <!--            <button type="submit" @click.prevent="uploadImage()" class="btn btn-success">Загрузить</button>-->
 <!--        </div>-->
-        <div class="text-right">
-            <button type="submit" @click.prevent="create()" class="btn btn-secondary">Добавить</button>
+        <div class=" text-right">
+            <button type="submit" @click.prevent="create()" class="btn btn-secondary">Добавить продукт</button>
         </div>
     </div>
 
@@ -165,7 +174,7 @@
 </template>
 
 <script>
-
+import Dropzone from "dropzone";
 export default {
     name: "Category",
 
@@ -195,7 +204,10 @@ export default {
 
             category_id: null,
 
-            image: null
+            image: null,
+
+            dropzone: null,
+            images: null
         }
     },
 
@@ -203,6 +215,12 @@ export default {
         console.log('Component mounted.')
         this.getCategory()
         this.getProduct()
+
+        this.dropzone = new Dropzone(this.$refs.dropzone, {
+            url: "/api/admin/product/create",
+            autoProcessQueue: false,
+            addRemoveLinks: true
+        })
     },
 
     methods: {
@@ -248,13 +266,29 @@ export default {
                 })
         },
         create() {
-            axios.post('/api/admin/product/create', {
-                name: this.product_name,
-                structure: this.product_structure,
-                description: this.product_description,
-                weight: this.product_weight,
-                price: this.product_price,
-                category_id: this.category_id
+            const formData = new FormData();
+
+            // Добавление текстовых полей
+            formData.append('name', this.product_name);
+            formData.append('structure', this.product_structure);
+            formData.append('description', this.product_description);
+            formData.append('weight', this.product_weight);
+            formData.append('price', this.product_price);
+            formData.append('category_id', this.category_id);
+            // console.log(this.dropzone.getAcceptedFiles())
+
+            const files = this.dropzone.getAcceptedFiles()
+            files.forEach(file => {
+                formData.append('images[]', file)
+                this.dropzone.removeFile(file)
+            })
+
+            console.log(formData)
+
+            axios.post('/api/admin/product/create', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
                 .then(result => {
                     console.log(result)
