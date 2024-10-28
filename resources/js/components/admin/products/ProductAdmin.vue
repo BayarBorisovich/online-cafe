@@ -1,21 +1,21 @@
 <template>
     <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-3">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Добавление продукта</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/admin">Home</a></li>
-                        <li class="breadcrumb-item active">Продукты</li>
-                    </ol>
-                </div><!-- /.col -->
-                <hr class="border-bottom border-4 border-dark">
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
+<!--    <div class="content-header">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="row mb-3">-->
+<!--                <div class="col-sm-6">-->
+<!--                    <h1 class="m-0">Добавление продукта</h1>-->
+<!--                </div>&lt;!&ndash; /.col &ndash;&gt;-->
+<!--                <div class="col-sm-6">-->
+<!--                    <ol class="breadcrumb float-sm-right">-->
+<!--                        <li class="breadcrumb-item"><a href="/admin">Home</a></li>-->
+<!--                        <li class="breadcrumb-item active">Продукты</li>-->
+<!--                    </ol>-->
+<!--                </div>&lt;!&ndash; /.col &ndash;&gt;-->
+<!--                <hr class="border-bottom border-4 border-dark">-->
+<!--            </div>&lt;!&ndash; /.row &ndash;&gt;-->
+<!--        </div>&lt;!&ndash; /.container-fluid &ndash;&gt;-->
+<!--    </div>-->
     <!-- /.content-header -->
     <div class="alert alert-success" v-if="success">
         {{ success }}
@@ -36,14 +36,27 @@
             <div :class="errors.structure ? 'alert alert-success' : 'd-none'" v-if="errors">
                 {{ errors.structure }}
             </div>
-            <input type="text" class="form-control" v-model="product_structure" name="structure" placeholder="состав продукта">
-
+           <textarea
+                class="form-control"
+                v-model="product_structure"
+                :style="{ height: dataHeight }"
+                name="structure"
+                placeholder="состав продукта"
+                @input="autoResize"
+            ></textarea>
             <label for="name" class="form-label">Описание продукта</label>
             <div :class="errors.description ? 'alert alert-success' : 'd-none'" v-if="errors">
                 {{ errors.description }}
             </div>
-            <input type="text" class="form-control" v-model="product_description" name="description" placeholder="описание продукта">
-
+            <!--            <input type="text" class="form-control" v-model="product_description" name="description" placeholder="описание продукта">-->
+            <textarea
+                class="form-control"
+                v-model="product_description"
+                :style="{ height: dataHeight }"
+                name="description"
+                placeholder="описание продукта"
+                @input="autoResize"
+            ></textarea>
             <label for="name" class="form-label">Вес гр.</label>
             <div :class="errors.weight ? 'alert alert-success' : 'd-none'" v-if="errors">
                 {{ errors.weight }}
@@ -72,23 +85,15 @@
                 <div>
                     <label for="name" class="form-label md-3">Загрузите картинку</label>
                 </div>
+                <div :class="errors.images ? 'alert alert-success' : 'd-none'" v-if="errors">
+                    {{ errors.structure }}
+                </div>
                 <div ref="dropzone" class="btn col-12 bg-dark text-center text-light">
                     Загрузите
                 </div>
             </div>
 
         </div>
-<!--        <div class="mb-3">-->
-<!--            <label class="form-label" for="inputImage">Загрузите фото продукта:</label>-->
-<!--            <input-->
-<!--                type="file"-->
-<!--                name="image"-->
-<!--                id="inputImage"-->
-<!--                class="form-control">-->
-<!--        </div>-->
-<!--        <div class="mb-3 text-right">-->
-<!--            <button type="submit" @click.prevent="uploadImage()" class="btn btn-success">Загрузить</button>-->
-<!--        </div>-->
         <div class=" text-right">
             <button type="submit" @click.prevent="create()" class="btn btn-secondary">Добавить продукт</button>
         </div>
@@ -143,8 +148,22 @@
                 <tr :class=" isId(product.id) ? '' : 'd-none'">
                     <th scope="row">{{ product.id }}</th>
                     <th><input type="text" v-model="name" class="form-control"></th>
-                    <th><input type="text" v-model="structure" class="form-control"></th>
-                    <th><input type="text" v-model="description" class="form-control"></th>
+                    <th>
+                        <textarea
+                            class="form-control"
+                            v-model="structure"
+                            :style="{ height: dataHeight }"
+                            @input="autoResize"
+                        ></textarea>
+                    </th>
+                    <th>
+                        <textarea
+                            class="form-control"
+                            v-model="description"
+                            :style="{ height: dataHeight }"
+                            @input="autoResize"
+                        ></textarea>
+                    </th>
                     <th><input type="text" v-model="weight" class="form-control"></th>
                     <th><input type="text" v-model="price" class="form-control"></th>
                     <td>
@@ -190,22 +209,25 @@ export default {
             successfully_changed: null,
             error_when_changing: null,
 
+            // изменение продукта
             name: null,
             structure: null,
             description: null,
             weight: null,
             price: null,
 
+            // добавление продукта
             product_name: null,
             product_structure: null,
             product_description: null,
             product_weight: null,
             product_price: null,
 
+            dataHeight: 'auto', // Начальная высота для описания
+
             category_id: null,
 
-            image: null,
-
+            // image: null,
             dropzone: null,
             images: null
         }
@@ -237,13 +259,6 @@ export default {
                 .then(result => {
                     //console.log(result)
                     this.categories = result.data
-                })
-        },
-
-        uploadImage() {
-            axios.post(`/api/admin/image/create`, {image: this.image})
-                .then( result => {
-                    console.log(result)
                 })
         },
 
@@ -293,6 +308,12 @@ export default {
                 .then(result => {
                     console.log(result)
                     this.product_name = null
+                    this.product_structure = null
+                    this.product_description = null
+                    this.product_weight = null
+                    this.product_price = null
+                    this.category_id = null
+
                     this.success = result.data.success
                     this.error = result.data.error
                     this.getCategory()
@@ -327,9 +348,25 @@ export default {
         isId(id) {
             return this.productId === id;
         },
-    }
+
+        // autoResizeDescription(event) {
+        //     const textarea = event.target;
+        //     textarea.style.height = 'auto'; // Сбрасываем высоту
+        //     textarea.style.height = `${textarea.scrollHeight}px`; // Устанавливаем новую высоту
+        // },
+        autoResize(event) {
+            const textarea = event.target;
+            textarea.style.height = 'auto'; // Сбрасываем высоту
+            textarea.style.height = `${textarea.scrollHeight}px`; // Устанавливаем новую высоту
+        }
+    },
 }
 </script>
+<style>
+textarea {
+    transition: height 0.2s; /* Плавное изменение высоты */
+}
+</style>
 
 
 

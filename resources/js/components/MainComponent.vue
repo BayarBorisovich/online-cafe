@@ -32,7 +32,7 @@
                         <li class="nav-item active">
                             <a class="nav-link fa" :href="'#'+category.id">{{ category.name }}</a>
                         </li>
-                       </ul>
+                    </ul>
                 </div>
                 <!-- /.navbar-collapse -->
                 <!-- Start Atribute Navigation -->
@@ -43,7 +43,8 @@
                         <li class="side-menu">
                             <!-- Button trigger modal -->
                             <a>
-                                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#CartsModal">
+                                <button type="button" class="border-0 bg-transparent" data-bs-toggle="modal"
+                                        data-bs-target="#CartsModal">
                                     <i class="fa fa-shopping-bag">
                                         <p class="mx-2">Корзина: {{ totalQuantity ? totalQuantity : 0 }}</p>
                                     </i>
@@ -87,20 +88,30 @@
                 <div class="col-lg-3 col-md-6 special-grid best-seller" v-for="product in category.products">
                     <div class="products-single fix box">
                         <div class="box-img-hover mt-3">
-                            <div :id="'CarouselImagesOfASingleProduct' + product.id" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            <!--            начало слайда картинок продукта на главном                -->
+                            <div :id="'CarouselImagesOfASingleProduct' + product.id"
+                                 class="carousel slide carousel-fade">
+                                <!--                 data-bs-ride="carousel"  // это включает атоматический слайд при довалении наверх после класса  ↑ ↑ ↑-->
                                 <div class="carousel-inner">
-                                    <div class="carousel-item" v-for="(image, index) in product.images" :class="{ active: index === 0 }">
-                                        <img :src="image.url" class="img-fluid d-block w-100" :alt="product.name + ' image ' + (index + 1)">
+                                    <div class="carousel-item" v-for="(image, index) in product.images"
+                                         :class="{ active: index === 0 }">
+                                        <img :src="image.url" class="img-fluid d-block w-100"
+                                             :alt="product.name + ' image ' + (index + 1)">
                                     </div>
                                 </div>
-                                <button class="carousel-control-prev" type="button" :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id" data-bs-slide="prev">
+                                <button class="carousel-control-prev" type="button"
+                                        :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id"
+                                        data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Предыдущий</span>
                                 </button>
-                                <button class="carousel-control-next" type="button" :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id" data-bs-slide="next">
+                                <button class="carousel-control-next" type="button"
+                                        :data-bs-target="'#CarouselImagesOfASingleProduct' + product.id"
+                                        data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Следующий</span>
                                 </button>
+                                <!--             конец слайда                   -->
                             </div>
                         </div>
                         <div class="why-text col-12 fa">
@@ -126,7 +137,7 @@
                                         </button>
                                         <div class="m-auto" v-for="cartProduct in products">
                                             <div v-if="product.id === cartProduct.product_id">
-                                                <h5 class="my-auto"> {{cartProduct.quantity}}</h5>
+                                                <h5 class="my-auto"> {{ cartProduct.quantity }}</h5>
                                             </div>
                                         </div>
 
@@ -155,20 +166,29 @@
                     <div class="row justify-content-between fa">
                         <div class="box-img-hover mt-3 col-6">
                             <div class="box-img-hover mt-3">
-                                <div :id="'carouselExampleFad-' + oneProduct.id" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                                <!--               начало слайда картинок в модальном окне продукта                 -->
+                                <div :id="'slideImagesInAModalWindow-' + oneProduct.id"
+                                     class="carousel slide carousel-fade" data-bs-ride="carousel">
                                     <div class="carousel-inner">
-                                        <div class="carousel-item" v-for="(image, index) in oneProduct.images" :class="{ active: index === 0 }">
-                                            <img :src="image.url" class="img-fluid d-block w-100" :alt="oneProduct.name + ' image ' + (index + 1)">
+                                        <div class="carousel-item" v-for="(image, index) in oneProduct.images"
+                                             :class="{ active: index === 0 }">
+                                            <img :src="image.url" class="img-fluid d-block w-100"
+                                                 :alt="oneProduct.name + ' image ' + (index + 1)">
                                         </div>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" :data-bs-target="'#carouselExampleFad-' + oneProduct.id" data-bs-slide="prev">
+                                    <button class="carousel-control-prev" type="button"
+                                            :data-bs-target="'#slideImagesInAModalWindow-' + oneProduct.id"
+                                            data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Предыдущий</span>
                                     </button>
-                                    <button class="carousel-control-next" type="button" :data-bs-target="'#carouselExampleFad-' + oneProduct.id" data-bs-slide="next">
+                                    <button class="carousel-control-next" type="button"
+                                            :data-bs-target="'#slideImagesInAModalWindow-' + oneProduct.id"
+                                            data-bs-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Следующий</span>
                                     </button>
+                                    <!--                                    конец слайда -->
                                 </div>
                             </div>
                         </div>
@@ -197,7 +217,8 @@
         <div class="modal-dialog modal-dialog-centered fa">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title fw-bolder" id="CartsModalLabel">{{ totalQuantity + ' товаров на ' + orderSum + ' р.'}} </h4>
+                    <h4 class="modal-title fw-bolder" id="CartsModalLabel">
+                        {{ totalQuantity + ' товаров на ' + orderSum + ' р.' }} </h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -207,9 +228,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="col-12 " v-for="product in products">
-                                        <div class="row justify-content-between" >
+                                        <div class="row justify-content-between">
                                             <div class="col">
-                                                <img class="img-fluid" src="/asset/images/img-pro-01.jpg"  alt=""/>
+                                                <img class="img-fluid" src="/asset/images/img-pro-01.jpg" alt=""/>
                                             </div>
                                             <div class="col text-left">
                                                 <h5 class="fw-bolder">{{ product.product.name }}</h5>
@@ -230,7 +251,8 @@
                                             <div class="col-2">
                                                 <div class="row">
                                                     <div class="col-1">
-                                                        <button @click.prevent="addMinus(product.product_id)" type="button"
+                                                        <button @click.prevent="addMinus(product.product_id)"
+                                                                type="button"
                                                                 class="border-0 bg-transparent">
                                                             <i class="fa fa-minus" aria-hidden="true"></i>
                                                         </button>
@@ -239,7 +261,8 @@
                                                         <h5 class="fw-bolder">{{ product.quantity }}</h5>
                                                     </div>
                                                     <div class="col-1">
-                                                        <button @click.prevent="addProduct(product.product_id)" type="button"
+                                                        <button @click.prevent="addProduct(product.product_id)"
+                                                                type="button"
                                                                 class="border-0 bg-transparent">
                                                             <i class="fa fa-plus" aria-hidden="true"></i>
                                                         </button>
@@ -388,7 +411,7 @@ export default {
         },
 
         isEmptyProduct() {
-            if ( this.empty === 'empty') {
+            if (this.empty === 'empty') {
                 this.productId = null
             }
         },

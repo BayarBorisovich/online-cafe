@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
-use App\Models\CategoryProduct;
 use App\Models\Image;
 use App\Models\Product;
 use Carbon\Carbon;
-use http\Env\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,9 +22,9 @@ class ProductController extends Controller
 
     public function create(ProductRequest $request): JsonResponse
     {
+        $data = $request->validated();
 
         try {
-            $data = $request->validated();
             $categoryId = $data['category_id'];
             $images = $data['images'];
             unset($data['category_id']);
@@ -35,21 +33,29 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             try {
-                $product = Product::query()->create($data);
-                $product->category()->attach($categoryId);
-
-
-                foreach ($images as $image) {
-                    $name = md5(Carbon::now() . '_' . $image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
-                    $path = Storage::disk('public')->putFileAs('/images', $image, $name);
-
-                    Image::create([
-                        'name' => $product->name,
-                        'path' => $path,
-                        'url' => url('/storage/' . $path),
-                        'product_id' => $product->id
-                    ]);
+                if ($data->isNotEmpty()) {
+                    $product = Product::query()->create($data);
+                    $product->category()->attach($categoryId);
                 }
+
+
+                if ($images->isNotEmpty()) {
+                    foreach ($images as $image) {
+                        $name = md5(Carbon::now() . '_' . $image->getClientOriginalName()) . '.' . $image->getClientOriginalExtension();
+                        $path = Storage::disk('public')->putFileAs('/images', $image, $name);
+
+                        if (isset($product->name)) {
+                            Image::create([
+                                'name' => $product->name,
+                                'path' => $path,
+                                'url' => url('/storage/' . $path),
+                                'product_id' => $product->id
+                            ]);
+                        }
+
+                    }
+                }
+
             } catch (\Exception $exception) {
                 DB::rollBack();
                 Log::channel('daily')->error('Произошла ошибка при добавлении продукта ' . $exception->getMessage() . ' ' . $exception->getLine());
@@ -103,7 +109,6 @@ class ProductController extends Controller
     {
         try {
             $product->category()->detach();
-
             $product->delete();
         } catch (\Throwable $exception) {
             Log::channel('daily')->error('Произошла ошибка при удалении продукта ' . $exception->getMessage() . ' ' . $exception->getLine());
